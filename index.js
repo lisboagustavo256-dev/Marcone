@@ -83,7 +83,7 @@ const config = require("./config.json");
 client.once("ready", async () => {
     console.log("Marcone Online!");
 
-    const canalRegras = client.channels.cache.get("ID_DO_CANAL_REGRAS");
+    const canalRegras = client.channels.cache.get("1515078564842574064");
 
     if (!canalRegras) return;
 
