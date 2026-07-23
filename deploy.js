@@ -2,7 +2,7 @@ const { REST, Routes, SlashCommandBuilder } = require("discord.js");
 
 const commands = [
     new SlashCommandBuilder()
-        .setName("skin")
+        .setName("char")
         .setDescription("Mostra a skin Roblox")
         .addStringOption(option =>
             option
