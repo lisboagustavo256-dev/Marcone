@@ -11,7 +11,7 @@ client.once("ready", () => {
 client.on("interactionCreate", async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    if (interaction.commandName === "skin") {
+    if (interaction.commandName === "char") {
         const nick = interaction.options.getString("nick");
 
         try {
