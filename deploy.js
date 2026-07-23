@@ -15,7 +15,17 @@ const commands = [
 const rest = new REST({ version: "10" })
     .setToken(process.env.TOKEN);
 
-rest.put(
-    Routes.applicationCommands(process.env.CLIENT_ID),
-    { body: commands }
-);
+(async () => {
+    try {
+        console.log("Registrando comandos...");
+
+        await rest.put(
+            Routes.applicationCommands(process.env.CLIENT_ID),
+            { body: commands }
+        );
+
+        console.log("Comando /char registrado com sucesso!");
+    } catch (error) {
+        console.error(error);
+    }
+})();
