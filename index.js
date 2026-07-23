@@ -1,45 +1,62 @@
 const { Client, GatewayIntentBits, EmbedBuilder } = require("discord.js");
-const noblox = require("noblox.js");
 
 const client = new Client({
     intents: [GatewayIntentBits.Guilds]
 });
 
 client.once("ready", () => {
-    console.log(`Bot ${client.user.tag} online!`);
+    console.log("Marcone Online!");
 });
 
-client.on("interactionCreate", async interaction => {
-
+client.on("interactionCreate", async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
     if (interaction.commandName === "char") {
-
         const nick = interaction.options.getString("nick");
 
         try {
-
-            const userId = await noblox.getIdFromUsername(nick);
-
-            const avatar = await noblox.getPlayerThumbnail(
-                userId,
-                "420x420",
-                "png",
-                false,
-                "body"
+            const response = await fetch(
+                "https://users.roblox.com/v1/usernames/users",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        usernames: [nick],
+                        excludeBannedUsers: false
+                    })
+                }
             );
+
+            const data = await response.json();
+
+            if (!data.data || !data.data.length) {
+                return interaction.reply("Usuário não encontrado.");
+            }
+
+            const userId = data.data[0].id;
+
+            const thumbResponse = await fetch(
+                `https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png&isCircular=false`
+            );
+
+            const thumbData = await thumbResponse.json();
+
+            const imageUrl = thumbData.data[0].imageUrl;
 
             const embed = new EmbedBuilder()
                 .setTitle(nick)
-                .setImage(avatar[0].imageUrl)
+                .setImage(imageUrl)
                 .setURL(`https://www.roblox.com/users/${userId}/profile`);
 
             await interaction.reply({
                 embeds: [embed]
             });
 
-        } catch {
-            await interaction.reply("Usuário não encontrado.");
+        } catch (err) {
+            console.error(err);
+            await interaction.reply("Erro ao buscar o jogador.");
         }
     }
 });
