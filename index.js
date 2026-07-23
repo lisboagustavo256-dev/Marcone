@@ -75,3 +75,82 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 client.login(process.env.TOKEN);
+
+const fs = require("fs");
+
+const config = require("./config.json");
+
+client.once("ready", async () => {
+    console.log("Marcone Online!");
+
+    const canalRegras = client.channels.cache.get("ID_DO_CANAL_REGRAS");
+
+    if (!canalRegras) return;
+
+    // Se já enviou, não manda novamente
+    if (config.regrasEnviadas === true) {
+        return;
+    }
+
+    const embed = new EmbedBuilder()
+        .setTitle("📜 Regras do Servidor")
+        .setDescription(`
+## 1. Respeito acima de tudo
+
+Trate todos os membros com respeito. Ofensas, assédio, preconceito, discriminação ou perseguição não serão tolerados.
+
+## 2. Sem spam ou flood
+
+Não envie mensagens repetidas, excesso de emojis, menções desnecessárias ou divulgações sem autorização.
+
+## 3. Conteúdo inadequado
+
+É proibido enviar conteúdo +18, gore, material ilegal ou qualquer conteúdo que viole os Termos de Serviço do Discord.
+
+## 4. Sem divulgação não autorizada
+
+Não divulgue outros servidores, redes sociais, links ou projetos sem permissão da equipe.
+
+## 5. Use os canais corretamente
+
+Cada canal possui uma finalidade específica. Mantenha as conversas organizadas no local adequado.
+
+## 6. Respeite a equipe
+
+Moderadores e administradores estão aqui para manter a ordem. Caso discorde de alguma decisão, abra um ticket para conversar.
+
+## 7. Proibido causar confusão
+
+Provocações, brigas, discussões excessivas ou atitudes que prejudiquem o ambiente podem resultar em punição.
+
+## 8. Nomes e fotos apropriados
+
+Seu nome, foto de perfil e status não podem conter conteúdo ofensivo, preconceituoso ou inadequado.
+
+## 9. Tickets
+
+Abra tickets apenas quando necessário. Tickets sem motivo ou usados para brincadeiras poderão resultar em punição.
+
+## 10. Bom senso
+
+Nem toda situação está prevista nas regras. A equipe poderá agir quando necessário para manter o servidor organizado e agradável para todos.
+
+:alertastaff2000:  O descumprimento das regras poderá resultar em advertência, mute, timeout, kick ou banimento, dependendo da gravidade da infração.
+-# Equipe @🛠️ Administrador  Agradeçe. @here @everyone
+        `)
+        .setColor("Red");
+
+    await canalRegras.send({
+        embeds: [embed]
+    });
+
+    // salva que já enviou
+    config.regrasEnviadas = true;
+
+    fs.writeFileSync(
+        "./config.json",
+        JSON.stringify(config, null, 4)
+    );
+
+    console.log("Regras enviadas!");
+});
