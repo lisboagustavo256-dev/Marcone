@@ -136,7 +136,7 @@ Abra tickets apenas quando necessário. Tickets sem motivo ou usados para brinca
 Nem toda situação está prevista nas regras. A equipe poderá agir quando necessário para manter o servidor organizado e agradável para todos.
 
 ⚠️ O descumprimento das regras poderá resultar em advertência, mute, timeout, kick ou banimento, dependendo da gravidade da infração.
--# Equipe @🛠️ Administrador  Agradeçe. @everyone @here
+-# Equipe @🛠️ Administrador  Agradeçe.
         `)
         .setColor("Red");
 
