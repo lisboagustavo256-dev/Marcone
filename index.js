@@ -15,6 +15,9 @@ client.on("interactionCreate", async (interaction) => {
         const nick = interaction.options.getString("nick");
 
         try {
+            // avisa o Discord que o bot está processando
+            await interaction.deferReply();
+
             const response = await fetch(
                 "https://users.roblox.com/v1/usernames/users",
                 {
@@ -32,10 +35,11 @@ client.on("interactionCreate", async (interaction) => {
             const data = await response.json();
 
             if (!data.data || !data.data.length) {
-                return interaction.reply("Usuário não encontrado.");
+                return interaction.editReply("❌ Usuário não encontrado.");
             }
 
             const userId = data.data[0].id;
+            const username = data.data[0].name;
 
             const thumbResponse = await fetch(
                 `https://thumbnails.roblox.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png&isCircular=false`
@@ -46,17 +50,26 @@ client.on("interactionCreate", async (interaction) => {
             const imageUrl = thumbData.data[0].imageUrl;
 
             const embed = new EmbedBuilder()
-                .setTitle(nick)
+                .setColor("Red")
+                .setTitle(`🎮 Skin de ${username}`)
                 .setImage(imageUrl)
-                .setURL(`https://www.roblox.com/users/${userId}/profile`);
+                .setURL(`https://www.roblox.com/users/${userId}/profile`)
+                .setFooter({
+                    text: "Marcone Roblox"
+                });
 
-            await interaction.reply({
+            await interaction.editReply({
                 embeds: [embed]
             });
 
         } catch (err) {
             console.error(err);
-            await interaction.reply("Erro ao buscar o jogador.");
+
+            if (interaction.deferred) {
+                await interaction.editReply("❌ Erro ao buscar o jogador.");
+            } else {
+                await interaction.reply("❌ Erro ao buscar o jogador.");
+            }
         }
     }
 });
